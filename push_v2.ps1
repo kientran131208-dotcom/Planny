@@ -1,4 +1,4 @@
-# PLANNY GITHUB AUTOMATION SCRIPT V2 (WITH IDENTITY)
+# PLANNY GITHUB AUTOMATION SCRIPT V2 (FORCE PUSH)
 Write-Host "--- DANG TIEN HANH DAY CODE LEN GITHUB ---" -ForegroundColor Cyan
 
 $gitPath = "D:\Git\cmd\git.exe"
@@ -18,7 +18,8 @@ git add .
 git commit -m "Initial commit: Planny Study App"
 git branch -M main
 
-Write-Host "Dang thuc hien lenh PUSH..." -ForegroundColor Yellow
-git push -u origin main
+Write-Host "Dang thuc hien lenh PUSH --FORCE..." -ForegroundColor Yellow
+git push -u origin main --force
 
 Write-Host "--- HOAN TAT ---" -ForegroundColor Green
+Pause
