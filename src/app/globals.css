@@ -1,0 +1,244 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #f8f9ff;
+  --color-foreground: #0b1c30;
+  
+  --color-surface: #f8f9ff;
+  --color-on-surface: #0b1c30;
+  --color-surface-variant: #d3e4fe;
+  --color-on-surface-variant: #454651;
+  
+  --color-primary: #00093a;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #031a6b;
+  --color-on-primary-container: #7687d9;
+  
+  --color-secondary: #1151d3;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #3a6bed;
+  --color-on-secondary-container: #fefcff;
+  
+  --color-tertiary: #00130a;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #002b1b;
+  --color-on-tertiary-container: #009f6e;
+  
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  
+  --color-outline: #757682;
+  --color-outline-variant: #c6c5d3;
+  
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #eff4ff;
+  --color-surface-container: #e5eeff;
+  --color-surface-container-high: #dce9ff;
+  --color-surface-container-highest: #d3e4fe;
+}
+
+.dark {
+  --color-background: #010415;
+  --color-foreground: #e2e8f0;
+  
+  --color-surface: #020617;
+  --color-on-surface: #f8fafc;
+  --color-surface-variant: #1e293b;
+  --color-on-surface-variant: #94a3b8;
+  
+  --color-primary: #3b82f6;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #1e3a8a;
+  --color-on-primary-container: #bfdbfe;
+  
+  --color-secondary: #6366f1;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #312e81;
+  --color-on-secondary-container: #e0e7ff;
+  
+  --color-surface-container-lowest: #0c112b;
+  --color-surface-container-low: #111827;
+  --color-surface-container: #1e293b;
+  --color-surface-container-high: #334155;
+  --color-surface-container-highest: #475569;
+  
+  --color-outline: #475569;
+  --color-outline-variant: #1e293b;
+
+  /* Chart & UI overrides for dark mode */
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+.dark .bg-white {
+  background-color: #0f172a !important;
+}
+
+.dark .text-\[\#031a6b\] {
+  color: #f1f5f9 !important;
+}
+
+.dark .border-gray-100, .dark .border-blue-100, .dark .border-gray-50 {
+  border-color: #1e293b !important;
+}
+
+.dark .bg-gray-50, .dark .bg-\[\#eff4ff\], .dark .bg-blue-50\/50 {
+  background-color: #1e293b !important;
+}
+
+.dark .text-gray-500, .dark .text-gray-400 {
+  color: #94a3b8 !important;
+}
+
+.dark .text-gray-800, .dark .text-gray-700 {
+  color: #ffffff !important;
+}
+
+.dark .text-gray-300 {
+  color: #475569 !important;
+}
+
+.dark .bg-\[\#f8faff\] {
+  background-color: #0c112b !important;
+}
+
+.dark header {
+  background-color: #020617 !important;
+  border-bottom-color: #1e293b !important;
+}
+
+.dark aside {
+  background-color: #020617 !important;
+  border-right-color: #1e293b !important;
+}
+
+/* Fix for blurry/faded text in inputs in Dark Mode */
+.dark input, 
+.dark textarea, 
+.dark select {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #1e293b !important;
+}
+
+/* Ensure placeholder is visible but not mờ */
+.dark input::placeholder, 
+.dark textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+/* Focus state for inputs in Dark Mode to be more visible */
+.dark input:focus, 
+.dark textarea:focus, 
+.dark select:focus {
+  border-color: #3b82f6 !important;
+  background-color: #000000 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-inter), sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+.focus-gradient {
+  background: linear-gradient(135deg, #1151d3 0%, #031a6b 100%);
+}
+
+.surface-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(24px);
+}
+
+@media print {
+  /* Hide UI elements */
+  aside, 
+  header, 
+  nav, 
+  .no-print, 
+  #export-btn,
+  .material-symbols-outlined:not(.print-icon) {
+    display: none !important;
+  }
+  
+  /* Reset layout for print */
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    position: static !important;
+    overflow: visible !important;
+    background: white !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    left: 0 !important;
+  }
+  
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  #analytics-report {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 15mm !important;
+    display: block !important;
+  }
+
+  /* Force critical backgrounds */
+  [class*="bg-[#eff4ff]"] { background-color: #eff4ff !important; }
+  [class*="bg-[#031a6b]"] { background-color: #031a6b !important; }
+  [class*="bg-[#d8e7ff]"] { background-color: #d8e7ff !important; }
+  [class*="bg-[#98c0ff]"] { background-color: #98c0ff !important; }
+  [class*="bg-[#4e89ff]"] { background-color: #4e89ff !important; }
+  
+  /* Fix background colors in PDF */
+  .bg-white { background-color: #ffffff !important; }
+  
+  /* Grid layout for cards in print */
+  .grid {
+    display: grid !important;
+    gap: 15px !important;
+  }
+
+  /* Prevent elements from breaking across pages */
+  .rounded-3xl, .bg-white, canvas, svg, .space-y-8 > div {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Ensure all chart text and labels are high-contrast black in PDF */
+  h1, h2, h3, h4, p, span, div {
+    color: #000 !important;
+  }
+  
+  .text-white { color: #fff !important; }
+  .text-blue-200 { color: #000 !important; }
+  .text-gray-300 { color: #000 !important; }
+  .text-gray-400 { color: #000 !important; }
+  .text-gray-500 { color: #000 !important; }
+  .text-\[\#031a6b\] { color: #031a6b !important; }
+  .print\:text-black { color: #000 !important; }
+
+  /* Recharts quality */
+  .recharts-responsive-container {
+    width: 100% !important;
+    height: 400px !important;
+  }
+
+  .shadow-xl, .shadow-lg, .shadow-md, .shadow-sm {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+}

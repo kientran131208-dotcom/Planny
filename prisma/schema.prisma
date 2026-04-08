@@ -1,0 +1,175 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String?
+  email         String?        @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String?        @default("Student")
+  school        String?
+  bio           String?
+  avatarUrl     String?
+  pomoGoalDay   Int            @default(8)
+  pomoGoalWeek  Int            @default(40)
+  pomoGoalMonth Int            @default(150)
+  
+  // Advanced Pomodoro Settings
+  pomoWorkMin       Int    @default(25)
+  pomoShortBreakMin Int    @default(5)
+  pomoLongBreakMin  Int    @default(15)
+  pomoInterval      Int    @default(4) // Sessions before long break
+  
+  // Notification Settings
+  remindersEnabled      Boolean @default(true)
+  notificationSound     String  @default("crystal")
+  soundVolume           Float   @default(0.5)
+  streakWarningEnabled  Boolean @default(true)
+
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  verificationCode    String?
+  verificationExpires DateTime?
+  resetCode           String?
+  resetExpires        DateTime?
+  accounts      Account[]
+  sessions      Session[]
+  events        Event[]
+  goals         Goal[]
+  studySessions StudySession[]
+  subjects      Subject[]
+  tasks         Task[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Subject {
+  id            String         @id @default(cuid())
+  name          String
+  colorCode     String
+  userId        String
+  createdAt     DateTime       @default(now())
+  events        Event[]
+  studySessions StudySession[]
+  user          User           @relation(fields: [userId], references: [id])
+  tasks         Task[]
+}
+
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  time        String?
+  priority    String    @default("MEDIUM")
+  isCompleted Boolean   @default(false)
+  duration    Int       @default(60)
+  subjectId   String?
+  goalId      String?
+  userId      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  timeEnd     String?
+  dateEnd     DateTime?
+  subject     Subject?  @relation(fields: [subjectId], references: [id])
+  goal        Goal?     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model Goal {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  deadline    DateTime
+  progress    Int         @default(0)
+  status      String      @default("ON_TRACK")
+  userId      String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  note        String?
+  user        User        @relation(fields: [userId], references: [id])
+  milestones  Milestone[]
+  tasks       Task[]
+}
+
+model Milestone {
+  id          String   @id @default(cuid())
+  title       String
+  date        DateTime
+  isCompleted Boolean  @default(false)
+  goalId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  goal        Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  date        DateTime
+  timeStart   String?
+  timeEnd     String?
+  description String?
+  priority    String    @default("MEDIUM")
+  subjectId   String?
+  userId      String
+  createdAt   DateTime  @default(now())
+  dateEnd     DateTime?
+  isCompleted Boolean   @default(false)
+  subject     Subject?  @relation(fields: [subjectId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model StudySession {
+  id          String   @id @default(cuid())
+  date        DateTime
+  title       String?
+  durationMin Int
+  mode        String?
+  subjectId   String?
+  userId      String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  subject     Subject? @relation(fields: [subjectId], references: [id])
+}
