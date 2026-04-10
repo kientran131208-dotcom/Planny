@@ -11,9 +11,8 @@ export async function getUserSettings() {
     const users: any[] = await prisma.$queryRaw`
       SELECT 
         pomoWorkMin, pomoShortBreakMin, pomoLongBreakMin, pomoInterval,
-        remindersEnabled, notificationSound, soundVolume, streakWarningEnabled,
-        pomoGoalDay, pomoGoalWeek, pomoGoalMonth
-      FROM "User"
+        remindersEnabled, notificationSound, soundVolume, streakWarningEnabled
+      FROM User 
       WHERE id = ${userId} 
       LIMIT 1
     `;
@@ -22,17 +21,14 @@ export async function getUserSettings() {
     
     const user = users[0];
     return {
-      pomoWorkMin: user.pomoworkmin ?? user.pomoWorkMin ?? 25,
-      pomoShortBreakMin: user.pomoshortbreakmin ?? user.pomoShortBreakMin ?? 5,
-      pomoLongBreakMin: user.pomolongbreakmin ?? user.pomoLongBreakMin ?? 15,
-      pomoInterval: user.pomointerval ?? user.pomoInterval ?? 4,
-      remindersEnabled: Boolean(user.remindersenabled ?? user.remindersEnabled ?? true),
-      notificationSound: user.notificationsound ?? user.notificationSound ?? 'crystal',
-      soundVolume: user.soundvolume ?? user.soundVolume ?? 0.5,
-      streakWarningEnabled: Boolean(user.streakwarningenabled ?? user.streakWarningEnabled ?? true),
-      pomoGoalDay: user.pomogoalday ?? user.pomoGoalDay ?? 8,
-      pomoGoalWeek: user.pomogoalweek ?? user.pomoGoalWeek ?? 40,
-      pomoGoalMonth: user.pomogoalmonth ?? user.pomoGoalMonth ?? 150,
+      pomoWorkMin: user.pomoWorkMin ?? 25,
+      pomoShortBreakMin: user.pomoShortBreakMin ?? 5,
+      pomoLongBreakMin: user.pomoLongBreakMin ?? 15,
+      pomoInterval: user.pomoInterval ?? 4,
+      remindersEnabled: Boolean(user.remindersEnabled ?? true),
+      notificationSound: user.notificationSound ?? 'crystal',
+      soundVolume: user.soundVolume ?? 0.5,
+      streakWarningEnabled: Boolean(user.streakWarningEnabled ?? true),
     };
   } catch (error) {
     console.error('[SETTINGS] Error fetching user settings:', error);

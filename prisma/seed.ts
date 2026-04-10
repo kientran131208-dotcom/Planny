@@ -1,13 +1,14 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaPg } from '@prisma/adapter-pg'
-import { Pool } from 'pg'
-import 'dotenv/config'
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+import BetterSqlite3 from 'better-sqlite3'
+import path from 'path'
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-})
-const adapter = new PrismaPg(pool)
-const prisma = new PrismaClient({ adapter })
+// Ensure absolute path for SQLite
+const dbPath = path.resolve(process.cwd(), 'prisma/dev.db').replace(/\\/g, '/');
+const adapter = new PrismaBetterSqlite3({
+  url: `file:${dbPath}`
+});
+const prisma = new PrismaClient({ adapter });
 
 // Matches the TEST_USER_ID used in Server Actions for consistency
 const TEST_USER_ID = 'user_clanny_01';
