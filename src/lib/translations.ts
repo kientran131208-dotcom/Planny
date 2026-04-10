@@ -346,6 +346,7 @@ export const translations = {
     deleteTagStart: 'Bắt đầu xoá...',
     deleteTagTitle: 'Xoá tag',
     // Calendar Picker & Date
+    prevMonth: 'Tháng trước',
     nextMonth: 'Tháng sau',
     mondayShort: 'T2',
     tuesdayShort: 'T3',
@@ -706,6 +707,7 @@ export const translations = {
     deleteTagStart: 'Deleting...',
     deleteTagTitle: 'Delete tag',
     // Calendar Picker & Date
+    prevMonth: 'Previous Month',
     nextMonth: 'Next Month',
     mondayShort: 'Mon',
     tuesdayShort: 'Tue',
