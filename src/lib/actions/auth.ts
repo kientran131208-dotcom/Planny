@@ -1,7 +1,7 @@
 "use server";
 
 import "server-only";
-import { prisma } from "@/lib/database";
+import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { sendVerificationCode, sendResetCode } from "@/lib/email";
 

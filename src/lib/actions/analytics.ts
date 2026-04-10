@@ -1,6 +1,6 @@
 'use server';
 
-import { database as prisma } from '@/lib/database';
+import { prisma } from '@/lib/prisma';
 import { getUserId } from '@/lib/auth-utils';
 
 export async function getAnalyticsStats(rangeInDays: number = 7) {

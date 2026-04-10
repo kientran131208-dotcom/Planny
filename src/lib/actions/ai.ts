@@ -1,7 +1,7 @@
 'use server';
 
 import { getUserId } from '@/lib/auth-utils';
-import { database as prisma } from '@/lib/database';
+import { prisma } from '@/lib/prisma';
 
 export interface AIInsight {
   message: string;
