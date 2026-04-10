@@ -6,8 +6,17 @@ import { getCalendarItems } from '@/lib/actions/calendar';
 import { getOverallGoalMetrics } from '@/lib/actions/goals';
 import { getUserSettings } from '@/lib/actions/user-settings';
 import DashboardContent from '@/components/dashboard/DashboardContent';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default async function Dashboard() {
+  const session = await getServerSession(authOptions);
+  
+  if (!session) {
+    redirect("/login");
+  }
+
   const now = new Date();
   const [tasks, stats, calendarItems, weeklyHours, streakData, goalMetrics, todaySessions, userSettings] = await Promise.all([
     getTasks(), 
