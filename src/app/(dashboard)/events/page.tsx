@@ -1,5 +1,7 @@
+export const dynamic = 'force-dynamic';
+
 import { fetchAppEvents } from '@/lib/actions/calendar';
-import { getSubjects } from '@/lib/actions/tasks';
+import { getSubjects } from '@/lib/actions/subjects';
 import EventListContent from '@/components/events/EventListContent';
 import QuickAddEventForm from '@/components/events/QuickAddEventForm';
 
