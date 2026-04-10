@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getGoalsWithStats, getOverallGoalMetrics, getTimelineMilestones } from '@/lib/actions/goals';
 import GoalView from '@/components/goals/GoalView';
 

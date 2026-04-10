@@ -1,5 +1,7 @@
 import { getCalendarItems, getTodaySummary, getUpcomingAlerts } from '@/lib/actions/calendar';
 import { getSubjects } from '@/lib/actions/tasks';
+export const dynamic = 'force-dynamic';
+
 import CalendarView from '@/components/calendar/CalendarView';
 
 export default async function Calendar(props: { 

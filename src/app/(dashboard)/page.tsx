@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getTasks, getStats } from '@/lib/actions/tasks';
 import { getWeeklyStudyTime, getStreak, getTodaySessions } from '@/lib/actions/pomodoro';
 import { getCalendarItems } from '@/lib/actions/calendar';
