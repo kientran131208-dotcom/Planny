@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { createSubject, deleteSubject, createTask } from '@/lib/actions/tasks';
+import { createTask } from '@/lib/actions/tasks';
+import { createSubject, deleteSubject } from '@/lib/actions/subjects';
 import { createEvent } from '@/lib/actions/calendar';
 import { useRouter } from 'next/navigation';
 import PlannyDatePicker from '@/components/ui/PlannyDatePicker';

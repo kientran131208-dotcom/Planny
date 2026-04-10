@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createTask, createSubject, deleteSubject } from '@/lib/actions/tasks';
+import { createTask } from '@/lib/actions/tasks';
+import { createSubject, deleteSubject } from '@/lib/actions/subjects';
 import { Subject } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import PlannyDatePicker from '@/components/ui/PlannyDatePicker';

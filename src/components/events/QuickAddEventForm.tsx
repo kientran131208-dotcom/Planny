@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { createEvent } from '@/lib/actions/calendar';
-import { createSubject, deleteSubject } from '@/lib/actions/tasks';
+import { createSubject, deleteSubject } from '@/lib/actions/subjects';
 import { useRouter } from 'next/navigation';
 import PlannyDatePicker from '../ui/PlannyDatePicker';
 import PlannyTimePicker from '../ui/PlannyTimePicker';
