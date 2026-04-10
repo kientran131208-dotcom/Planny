@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "./prisma";
+import { prisma } from "./database";
 import bcrypt from "bcryptjs";
 
 // Type augmentation for NextAuth to handle user IDs correctly in TypeScript
