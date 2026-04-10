@@ -346,7 +346,6 @@ export const translations = {
     deleteTagStart: 'Bắt đầu xoá...',
     deleteTagTitle: 'Xoá tag',
     // Calendar Picker & Date
-    prevMonth: 'Tháng trước',
     nextMonth: 'Tháng sau',
     mondayShort: 'T2',
     tuesdayShort: 'T3',
@@ -354,7 +353,11 @@ export const translations = {
     thursdayShort: 'T5',
     fridayShort: 'T6',
     saturdayShort: 'T7',
-    sundayShort: 'CN'
+    sundayShort: 'CN',
+    // AI Insights
+    aiInsightTitle: 'Phân tích từ AI',
+    productivityScore: 'Điểm năng suất',
+    takeAction: 'Thực hiện ngay'
   },
   EN: {
     // Basic Navigation & UI
@@ -703,7 +706,6 @@ export const translations = {
     deleteTagStart: 'Deleting...',
     deleteTagTitle: 'Delete tag',
     // Calendar Picker & Date
-    prevMonth: 'Previous Month',
     nextMonth: 'Next Month',
     mondayShort: 'Mon',
     tuesdayShort: 'Tue',
@@ -711,7 +713,11 @@ export const translations = {
     thursdayShort: 'Thu',
     fridayShort: 'Fri',
     saturdayShort: 'Sat',
-    sundayShort: 'Sun'
+    sundayShort: 'Sun',
+    // AI Insights
+    aiInsightTitle: 'AI Insight',
+    productivityScore: 'Productivity Score',
+    takeAction: 'Take Action'
   }
 };
 
