@@ -4,62 +4,9 @@ import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { getUserId } from '@/lib/auth-utils';
 
-export async function createSubject(name: string, colorCode: string) {
-  try {
-    const userId = await getUserId();
-    const subject = await prisma.subject.create({
-      data: {
-        name,
-        colorCode,
-        userId
-      }
-    });
-    return { success: true, subject };
-  } catch (error: any) {
-    console.error('Error creating subject:', error);
-    return { success: false, error: error.message };
-  }
-}
 
-export async function deleteSubject(subjectId: string) {
-  try {
-    const userId = await getUserId();
-    
-    console.log(`[SERVER] Attempting to delete subject ${subjectId} for user ${userId}`);
 
-    // First, disconnect from all tasks, events and study sessions
-    // We remove the userId check here since the tag itself is being deleted
-    await Promise.all([
-      prisma.task.updateMany({
-        where: { subjectId },
-        data: { subjectId: null }
-      }),
-      prisma.event.updateMany({
-        where: { subjectId },
-        data: { subjectId: null }
-      }),
-      prisma.studySession.updateMany({
-        where: { subjectId },
-        data: { subjectId: null }
-      })
-    ]);
 
-    // Now delete the subject
-    await prisma.subject.delete({
-      where: { id: subjectId }
-    });
-
-    console.log(`[SERVER] Subject ${subjectId} deleted successfully`);
-
-    revalidatePath('/tasks');
-    revalidatePath('/calendar');
-    revalidatePath('/');
-    return { success: true };
-  } catch (error: any) {
-    console.error('[SERVER] Error deleting subject:', error);
-    return { success: false, error: `Lỗi: ${error.message || 'Không thể xoá tag.'}` };
-  }
-}
 
 export async function getTasks() {
   try {
@@ -186,17 +133,7 @@ export async function updateTask(taskId: string, data: {
   }
 }
 
-export async function getSubjects() {
-  try {
-    const userId = await getUserId();
-    return await prisma.subject.findMany({
-      where: { userId },
-    });
-  } catch (error) {
-    console.error('Error fetching subjects:', error);
-    return [];
-  }
-}
+
 
 export async function getStats() {
   try {
