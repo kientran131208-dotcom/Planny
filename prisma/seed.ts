@@ -1,14 +1,7 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
-import BetterSqlite3 from 'better-sqlite3'
-import path from 'path'
 
-// Ensure absolute path for SQLite
-const dbPath = path.resolve(process.cwd(), 'prisma/dev.db').replace(/\\/g, '/');
-const adapter = new PrismaBetterSqlite3({
-  url: `file:${dbPath}`
-});
-const prisma = new PrismaClient({ adapter });
+// Sử dụng PrismaClient chuẩn, không dùng adapter SQLite
+const prisma = new PrismaClient();
 
 // Matches the TEST_USER_ID used in Server Actions for consistency
 const TEST_USER_ID = 'user_clanny_01';
@@ -17,13 +10,17 @@ async function main() {
   console.log('🚀 Starting Seeding Process...');
 
   console.log('🧹 Cleaning up database...');
-  await prisma.studySession.deleteMany({});
-  await prisma.milestone.deleteMany({});
-  await prisma.task.deleteMany({});
-  await prisma.event.deleteMany({});
-  await prisma.goal.deleteMany({});
-  await prisma.subject.deleteMany({});
-  await prisma.user.deleteMany({ where: { id: TEST_USER_ID } });
+  try {
+    await prisma.studySession.deleteMany({});
+    await prisma.milestone.deleteMany({});
+    await prisma.task.deleteMany({});
+    await prisma.event.deleteMany({});
+    await prisma.goal.deleteMany({});
+    await prisma.subject.deleteMany({});
+    await prisma.user.deleteMany({ where: { id: TEST_USER_ID } });
+  } catch (e) {
+    console.log('Note: Some tables might be empty, continuing...');
+  }
 
   console.log('👤 Creating test user...');
   const user = await prisma.user.create({
@@ -84,7 +81,8 @@ async function main() {
     }
   });
 
-  console.log('🏁 Creating milestones for goals...');
+  console.log('✅ Basic Seeding completed. Now generating study data...');
+
   const milestones = [
     { title: 'Chương 1-5', date: new Date('2026-02-15'), isCompleted: true, goalId: mathGoal.id },
     { title: 'Chương 6-10', date: new Date('2026-03-15'), isCompleted: true, goalId: mathGoal.id },
@@ -105,12 +103,7 @@ async function main() {
     await prisma.milestone.create({ data: m });
   }
 
-  console.log('✅ Basic Seeding completed. Now generating historical study data...');
-
   const now = new Date();
-  
-  // Generating historical tasks
-  console.log('📝 Generating tasks...');
   const taskTitles = ['Ôn tập Algebra', 'Viết bài luận IELTS', 'Giải đề Physics', 'Luyện Codeforces', 'Học từ vựng mới'];
   for (let i = 0; i < 40; i++) {
     const taskDate = new Date();
@@ -130,16 +123,12 @@ async function main() {
     });
   }
 
-  // Generating historical study sessions
-  console.log('📊 Generating study sessions...');
   for (let i = 0; i < 30; i++) {
     const sessionDate = new Date();
     sessionDate.setDate(now.getDate() - i);
-    
-    // Create 1-3 sessions per day
     const numSessions = Math.floor(Math.random() * 3) + 1;
     for (let s = 0; s < numSessions; s++) {
-      const duration = Math.floor(Math.random() * 90) + 30; // 30-120 mins
+      const duration = Math.floor(Math.random() * 90) + 30;
       const sub = [math.id, eng.id, physics.id][Math.floor(Math.random() * 3)];
       
       await prisma.studySession.create({
