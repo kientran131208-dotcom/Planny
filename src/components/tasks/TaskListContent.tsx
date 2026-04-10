@@ -6,13 +6,13 @@ import TaskCard from './TaskCard';
 import { useLanguage } from '../LanguageProvider';
 
 interface TaskListContentProps {
-  tasks: any[];
+  initialTasks: any[];
   subjects: any[];
 }
 
 type FilterType = 'TODAY' | 'ALL' | 'WEEK' | 'COMPLETED' | 'RANGE';
 
-export default function TaskListContent({ tasks, subjects }: TaskListContentProps) {
+export default function TaskListContent({ initialTasks = [], subjects = [] }: TaskListContentProps) {
   const { lang, t } = useLanguage();
   const [filter, setFilter] = useState<FilterType>('TODAY');
   const [startDate, setStartDate] = useState('');
@@ -20,13 +20,18 @@ export default function TaskListContent({ tasks, subjects }: TaskListContentProp
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(null);
   const now = new Date();
 
+  // Ensure tasks is always an array
+  const tasks = Array.isArray(initialTasks) ? initialTasks : [];
+  const safeSubjects = Array.isArray(subjects) ? subjects : [];
+
   const getFilteredTasks = () => {
-    let result = tasks;
+    let result = [...tasks];
 
     // First filter by the main categories
     switch (filter) {
       case 'TODAY':
         result = tasks.filter(t => {
+          if (!t.date) return false;
           const taskDate = new Date(t.date);
           const taskEndDate = t.dateEnd ? new Date(t.dateEnd) : taskDate;
           const today = startOfDay(now);
@@ -36,7 +41,7 @@ export default function TaskListContent({ tasks, subjects }: TaskListContentProp
         });
         break;
       case 'WEEK':
-        result = tasks.filter(t => isThisWeek(new Date(t.date), { weekStartsOn: 1 }));
+        result = tasks.filter(t => t.date && isThisWeek(new Date(t.date), { weekStartsOn: 1 }));
         break;
       case 'COMPLETED':
         result = tasks.filter(t => t.isCompleted);
@@ -47,6 +52,7 @@ export default function TaskListContent({ tasks, subjects }: TaskListContentProp
           const e = startOfDay(new Date(endDate));
           e.setHours(23, 59, 59, 999);
           result = tasks.filter(t => {
+            if (!t.date) return false;
             const tStart = new Date(t.date);
             const tEnd = t.dateEnd ? new Date(t.dateEnd) : tStart;
             return (tStart <= e && tEnd >= s);
@@ -69,6 +75,7 @@ export default function TaskListContent({ tasks, subjects }: TaskListContentProp
   const filteredTasks = getFilteredTasks();
   
   const overdueTasks = tasks.filter(t => {
+    if (!t.date) return false;
     const end = t.dateEnd ? new Date(t.dateEnd) : new Date(t.date);
     return startOfDay(end) < startOfDay(now) && !t.isCompleted;
   });
@@ -81,13 +88,14 @@ export default function TaskListContent({ tasks, subjects }: TaskListContentProp
           <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
             {[
               { id: 'TODAY', label: t('todayTasks'), count: tasks.filter(t => {
+                 if (!t.date) return false;
                  const start = startOfDay(new Date(t.date));
                  const end = startOfDay(t.dateEnd ? new Date(t.dateEnd) : start);
                  const today = startOfDay(new Date());
                  return today >= start && today <= end;
               }).length },
               { id: 'ALL', label: t('allTasks'), count: tasks.length },
-              { id: 'WEEK', label: t('thisWeek'), count: tasks.filter(t => isThisWeek(new Date(t.date), { weekStartsOn: 1 })).length },
+              { id: 'WEEK', label: t('thisWeek'), count: tasks.filter(t => t.date && isThisWeek(new Date(t.date), { weekStartsOn: 1 })).length },
               { id: 'COMPLETED', label: t('completedTasksTitle'), count: tasks.filter(t => t.isCompleted).length },
               { id: 'RANGE', label: t('customFilter'), count: -1 }
             ].map((f) => (
@@ -155,7 +163,7 @@ export default function TaskListContent({ tasks, subjects }: TaskListContentProp
                   className="w-full bg-gray-50 border-none rounded-2xl px-5 py-[15px] text-sm font-bold text-[#031a6b] focus:ring-2 focus:ring-blue-500 transition-all outline-none appearance-none cursor-pointer"
                 >
                   <option value="">{t('allSubjects')}</option>
-                  {subjects.map(subject => (
+                  {safeSubjects.map(subject => (
                     <option key={subject.id} value={subject.id}>
                       {subject.name}
                     </option>
@@ -179,7 +187,7 @@ export default function TaskListContent({ tasks, subjects }: TaskListContentProp
                 {t('applyingFilter')} 
                 {startDate && ` ${t('from')} ${new Date(startDate).toLocaleDateString(lang === 'VI' ? 'vi-VN' : 'en-US')}`}
                 {endDate && ` ${t('to')} ${new Date(endDate).toLocaleDateString(lang === 'VI' ? 'vi-VN' : 'en-US')}`}
-                {selectedSubjectId && ` ${t('subjectPrefix')} ${subjects.find(s => s.id === selectedSubjectId)?.name}`}
+                {selectedSubjectId && ` ${t('subjectPrefix')} ${safeSubjects.find(s => s.id === selectedSubjectId)?.name}`}
               </p>
             )}
           </div>
@@ -197,7 +205,7 @@ export default function TaskListContent({ tasks, subjects }: TaskListContentProp
 
           <div className="space-y-4">
             {overdueTasks.map(task => (
-              <TaskCard key={task.id} task={task} subject={task.subject} allSubjects={subjects} />
+              <TaskCard key={task.id} task={task} subject={task.subject} allSubjects={safeSubjects} />
             ))}
           </div>
         </div>
@@ -219,7 +227,7 @@ export default function TaskListContent({ tasks, subjects }: TaskListContentProp
         <div className={`space-y-4 ${filter === 'ALL' || filter === 'WEEK' || filter === 'RANGE' ? 'grid grid-cols-1 md:grid-cols-2 gap-4 space-y-0' : ''}`}>
           {filteredTasks.length > 0 ? (
             filteredTasks.map(task => (
-              <TaskCard key={task.id} task={task} subject={task.subject} allSubjects={subjects} />
+              <TaskCard key={task.id} task={task} subject={task.subject} allSubjects={safeSubjects} />
             ))
           ) : (
             <div className="col-span-full p-12 text-center bg-gray-50/50 rounded-[40px] border-2 border-dashed border-gray-200">
