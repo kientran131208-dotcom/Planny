@@ -20,7 +20,7 @@ Chúng ta đã sử dụng những công nghệ hiện đại nhất để đả
 
 ### **Trí Tuệ Nhân Tạo & Tiện Ích**
 - **Google Generative AI (Gemini)**: "Bộ não" của ứng dụng, hỗ trợ phân tích mục tiêu và đưa ra lời khuyên học tập.
-- **Resend**: Dịch vụ gửi Email tự động chuyên nghiệp để xác thực tài khoản và khôi phục mật khẩu.
+- **Hệ thống xác thực nội bộ**: Được thiết kế để quản lý người dùng trực tiếp qua Database, đảm bảo tính bảo mật và riêng tư cao nhất.
 
 ---
 
@@ -57,7 +57,7 @@ Chúng ta đã sử dụng những công nghệ hiện đại nhất để đả
 
 1. **Chuyển đổi Database**: Từ SQLite (chỉ dùng trên máy cá nhân) sang **PostgreSQL (Supabase)** để ứng dụng có thể dùng được trên môi trường web toàn cầu.
 2. **Hardening Auth**: Gia cố hệ thống đăng nhập, sửa lỗi điều hướng và xử lý các trường hợp phản hồi từ Server (500 Error).
-3. **Manual Verification**: Hỗ trợ xác thực người dùng trực tiếp từ Database để vượt qua rào cản Sandbox của dịch vụ Email.
+3. **Manual Verification & Dev Bypass**: Triển khai cơ chế xác thực người dùng trực tiếp từ Database, giúp quá trình thiết lập tài khoản diễn ra nhanh chóng mà không phụ thuộc vào dịch vụ bên thứ ba.
 4. **Fix UI Dashboard**: Đồng bộ hóa màu sắc môn học và sửa lỗi hiển thị Task trên lịch.
 
 ---
