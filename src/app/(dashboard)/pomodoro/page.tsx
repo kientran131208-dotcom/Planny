@@ -18,7 +18,7 @@ export default async function PomodoroPage() {
   ]);
 
   return (
-    <main className="p-10 xl:p-16 min-h-screen bg-[#f8f9ff]">
+    <main className="p-10 xl:p-16 min-h-screen bg-background transition-colors duration-300">
       <div className="max-w-[1500px] mx-auto">
         <PomodoroHeader />
 

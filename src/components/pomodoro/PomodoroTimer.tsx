@@ -30,7 +30,7 @@ const SOUNDS: Record<string, string> = {
 
 export default function PomodoroTimer({ subjects, onSessionComplete, userSettings }: PomodoroTimerProps) {
   const { t } = useLanguage();
-  
+
   const MODES_CONFIG = {
     FOCUS: { label: t('modeFocus'), defaultTime: userSettings?.pomoWorkMin || 25 },
     SHORT_BREAK: { label: t('modeShortBreak'), defaultTime: userSettings?.pomoShortBreakMin || 5 },
@@ -50,9 +50,9 @@ export default function PomodoroTimer({ subjects, onSessionComplete, userSetting
   const [sessionTitle, setSessionTitle] = useState('');
   const [sessionCount, setSessionCount] = useState(0); // Count how many focus sessions completed
   const [isLoaded, setIsLoaded] = useState(false);
-  
+
   const hasCompletedRef = useRef(false);
-  const STORAGE_KEY = 'clanny_pomo_v3'; 
+  const STORAGE_KEY = 'clanny_pomo_v3';
 
   // 1. Initial Load
   useEffect(() => {
@@ -65,7 +65,7 @@ export default function PomodoroTimer({ subjects, onSessionComplete, userSetting
         if (state.subjectId) setSelectedSubjectId(state.subjectId);
         if (state.title) setSessionTitle(state.title);
         if (state.sessionCount !== undefined) setSessionCount(state.sessionCount);
-        
+
         if (state.isActive && state.endTime) {
           const now = Date.now();
           const remaining = Math.round((state.endTime - now) / 1000);
@@ -147,14 +147,14 @@ export default function PomodoroTimer({ subjects, onSessionComplete, userSetting
       audio.volume = userSettings.soundVolume || 0.5;
       audio.play();
     } catch (error) {
-       console.error('Error playing sound:', error);
+      console.error('Error playing sound:', error);
     }
   };
 
   const handleTimerComplete = () => {
     setIsActive(false);
     playNotificationSound();
-    
+
     // Logic for next mode
     let nextMode: Mode = 'SHORT_BREAK';
     let nextSessionCount = sessionCount;
@@ -162,7 +162,7 @@ export default function PomodoroTimer({ subjects, onSessionComplete, userSetting
     if (mode === 'FOCUS') {
       nextSessionCount += 1;
       setSessionCount(nextSessionCount);
-      
+
       const interval = userSettings?.pomoInterval || 4;
       if (nextSessionCount % interval === 0) {
         nextMode = 'LONG_BREAK';
@@ -175,18 +175,18 @@ export default function PomodoroTimer({ subjects, onSessionComplete, userSetting
 
     const resetTime = customTimes[mode] * 60;
     setTimeLeft(resetTime); // Reset current timer, but usually we auto-switch
-    
+
     // Auto-switch to next mode
     setMode(nextMode);
     setTimeLeft(customTimes[nextMode] * 60);
 
     if (onSessionComplete) {
-       onSessionComplete({ 
-         mode, 
-         minutes: customTimes[mode], 
-         subjectId: selectedSubjectId,
-         title: sessionTitle || null
-       });
+      onSessionComplete({
+        mode,
+        minutes: customTimes[mode],
+        subjectId: selectedSubjectId,
+        title: sessionTitle || null
+      });
     }
     // Clear title after focus session complete
     if (mode === 'FOCUS') setSessionTitle('');
@@ -268,81 +268,80 @@ export default function PomodoroTimer({ subjects, onSessionComplete, userSetting
   const progress = ((customTimes[mode] * 60 - timeLeft) / (customTimes[mode] * 60)) * 100;
 
   return (
-    <div className="bg-white p-12 rounded-[3rem] shadow-[0_40px_100px_rgba(3,26,107,0.04)] border border-gray-50 space-y-10 relative overflow-hidden">
+    <div className="bg-white dark:bg-[#0f172a] p-12 rounded-[3rem] shadow-[0_40px_100px_rgba(3,26,107,0.04)] dark:shadow-none border border-gray-50 dark:border-gray-800 space-y-10 relative overflow-hidden">
       {/* Settings Overlay */}
       {showSettings && (
-        <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-50 p-12 overflow-y-auto animate-in fade-in duration-300">
-           <div className="flex justify-between items-center mb-10">
-              <h3 className="text-xl font-black text-[#031a6b] tracking-tight">{t('pomoSettings')}</h3>
-              <button 
-                onClick={() => setShowSettings(false)}
-                className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-[#031a6b] transition-all"
-              >
-                <span className="material-symbols-outlined font-black">close</span>
-              </button>
-           </div>
-           
-           <div className="space-y-10 pb-10">
-              <div className="space-y-6">
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest">{t('timerConfiguration') || 'Cấu hình thời gian'}</label>
-                {(Object.keys(MODES_CONFIG) as Mode[]).map(m => (
-                  <div key={m} className="space-y-3">
-                    <div className="flex justify-between text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                        <span>{MODES_CONFIG[m].label}</span>
-                        <span className="text-[#1151d3] font-black">{customTimes[m]} {t('minute')}</span>
-                    </div>
-                    <input 
-                        type="range" min="1" max="60"
-                        value={customTimes[m]}
-                        onChange={(e) => updateCustomTime(m, parseInt(e.target.value))}
-                        className="w-full h-2 bg-blue-50 rounded-lg appearance-none cursor-pointer accent-[#1151d3]"
-                    />
+        <div className="absolute inset-0 bg-white/95 dark:bg-[#0f172a]/fb backdrop-blur-md z-50 p-12 overflow-y-auto animate-in fade-in duration-300">
+          <div className="flex justify-between items-center mb-10">
+            <h3 className="text-xl font-black text-[#031a6b] dark:text-white tracking-tight">{t('pomoSettings')}</h3>
+            <button
+              onClick={() => setShowSettings(false)}
+              className="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-400 hover:text-[#031a6b] dark:hover:text-white transition-all"
+            >
+              <span className="material-symbols-outlined font-black">close</span>
+            </button>
+          </div>
+
+          <div className="space-y-10 pb-10">
+            <div className="space-y-6">
+              <label className="text-xs font-black text-gray-400 uppercase tracking-widest">{t('timerConfiguration') || 'Cấu hình thời gian'}</label>
+              {(Object.keys(MODES_CONFIG) as Mode[]).map(m => (
+                <div key={m} className="space-y-3">
+                  <div className="flex justify-between text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                    <span>{MODES_CONFIG[m].label}</span>
+                    <span className="text-[#1151d3] font-black">{customTimes[m]} {t('minute')}</span>
                   </div>
+                  <input
+                    type="range" min="1" max="60"
+                    value={customTimes[m]}
+                    onChange={(e) => updateCustomTime(m, parseInt(e.target.value))}
+                    className="w-full h-2 bg-blue-50 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-[#1151d3]"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-6 pt-6 border-t border-gray-50">
+              <label className="text-xs font-black text-gray-400 uppercase tracking-widest">{t('soundType')}</label>
+              <div className="grid grid-cols-3 gap-3">
+                {['crystal', 'bell', 'digital'].map(s => (
+                  <button
+                    key={s}
+                    onClick={() => {
+                      setGlobalNotiSettings(prev => ({ ...prev, notificationSound: s }));
+                      playPreviewSound(s);
+                    }}
+                    className={`py-3 rounded-2xl text-[9px] font-black uppercase tracking-tight transition-all border-2 ${globalNotiSettings.notificationSound === s ? 'border-[#1151d3] bg-blue-50 text-[#1151d3]' : 'border-gray-50 text-gray-400'
+                      }`}
+                  >
+                    {t(`${s}Sound` as any) || s}
+                  </button>
                 ))}
               </div>
-
-              <div className="space-y-6 pt-6 border-t border-gray-50">
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest">{t('soundType')}</label>
-                <div className="grid grid-cols-3 gap-3">
-                   {['crystal', 'bell', 'digital'].map(s => (
-                      <button 
-                        key={s}
-                        onClick={() => {
-                          setGlobalNotiSettings(prev => ({ ...prev, notificationSound: s }));
-                          playPreviewSound(s);
-                        }}
-                        className={`py-3 rounded-2xl text-[9px] font-black uppercase tracking-tight transition-all border-2 ${
-                           globalNotiSettings.notificationSound === s ? 'border-[#1151d3] bg-blue-50 text-[#1151d3]' : 'border-gray-50 text-gray-400'
-                        }`}
-                      >
-                         {t(`${s}Sound` as any) || s}
-                      </button>
-                   ))}
+              <div className="space-y-3">
+                <div className="flex justify-between text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                  <span>{t('notificationVolume')}</span>
+                  <span>{Math.round(globalNotiSettings.soundVolume * 100)}%</span>
                 </div>
-                <div className="space-y-3">
-                   <div className="flex justify-between text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                      <span>{t('notificationVolume')}</span>
-                      <span>{Math.round(globalNotiSettings.soundVolume * 100)}%</span>
-                   </div>
-                   <input 
-                      type="range" min="0" max="1" step="0.1"
-                      value={globalNotiSettings.soundVolume}
-                      onChange={(e) => setGlobalNotiSettings(prev => ({ ...prev, soundVolume: parseFloat(e.target.value) }))}
-                      className="w-full h-2 bg-blue-50 rounded-lg appearance-none cursor-pointer accent-[#1151d3]"
-                   />
-                </div>
+                <input
+                  type="range" min="0" max="1" step="0.1"
+                  value={globalNotiSettings.soundVolume}
+                  onChange={(e) => setGlobalNotiSettings(prev => ({ ...prev, soundVolume: parseFloat(e.target.value) }))}
+                  className="w-full h-2 bg-blue-50 rounded-lg appearance-none cursor-pointer accent-[#1151d3]"
+                />
               </div>
-           </div>
-           
-           <div className="mt-6 text-center">
-              <button 
-                onClick={handleSaveGlobalSettings}
-                disabled={isUpdatingSettings}
-                className="w-full py-4 bg-[#031a6b] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-100 hover:opacity-90 transition-all disabled:opacity-50"
-              >
-                {isUpdatingSettings ? t('saving') || 'Đang lưu...' : t('saveChanges') || 'Lưu thay đổi'}
-              </button>
-           </div>
+            </div>
+          </div>
+
+          <div className="mt-6 text-center">
+            <button
+              onClick={handleSaveGlobalSettings}
+              disabled={isUpdatingSettings}
+              className="w-full py-4 bg-[#031a6b] dark:bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-100 dark:shadow-none hover:opacity-90 transition-all disabled:opacity-50"
+            >
+              {isUpdatingSettings ? t('saving') || 'Đang lưu...' : t('saveChanges') || 'Lưu thay đổi'}
+            </button>
+          </div>
         </div>
       )}
 
@@ -353,24 +352,23 @@ export default function PomodoroTimer({ subjects, onSessionComplete, userSetting
             <button
               key={m}
               onClick={() => resetTimer(m)}
-              className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                mode === m 
-                  ? 'bg-white text-[#1151d3] shadow-sm shadow-blue-100/50' 
-                  : 'text-gray-400 hover:text-gray-600'
-              }`}
+              className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${mode === m
+                  ? 'bg-white dark:bg-[#1e293b] text-[#1151d3] shadow-sm shadow-blue-100/50 dark:shadow-none'
+                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
+                }`}
             >
               {MODES_CONFIG[m].label}
             </button>
           ))}
         </div>
-        <button 
+        <button
           onClick={() => setShowSettings(true)}
-          className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-300 hover:text-[#1151d3] hover:bg-blue-50 transition-all"
+          className="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-[#1e293b] flex items-center justify-center text-gray-300 hover:text-[#1151d3] hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-all"
         >
           <span className="material-symbols-outlined font-black">settings</span>
         </button>
       </div>
-      
+
       {/* Session Title Input */}
       {mode === 'FOCUS' && (
         <div className="relative group/input">
@@ -379,7 +377,7 @@ export default function PomodoroTimer({ subjects, onSessionComplete, userSetting
             placeholder={t('timerPlaceholder')}
             value={sessionTitle}
             onChange={(e) => setSessionTitle(e.target.value)}
-            className="w-full text-center bg-gray-50 border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#031a6b] placeholder:text-gray-300 focus:ring-2 focus:ring-blue-100 transition-all"
+            className="w-full text-center bg-gray-50 dark:bg-[#1e293b] border-none rounded-2xl py-4 px-6 text-sm font-bold text-[#031a6b] dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/20 transition-all"
           />
           <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-focus-within/input:opacity-100 transition-opacity">
             <span className="material-symbols-outlined text-sm text-blue-400">edit</span>
@@ -390,90 +388,88 @@ export default function PomodoroTimer({ subjects, onSessionComplete, userSetting
       {/* Main Timer Display */}
       <div className="relative flex justify-center py-4">
         <div className="relative w-80 h-80 flex items-center justify-center">
-            <svg className="absolute w-full h-full -rotate-90 transform">
-                <circle
-                    cx="160"
-                    cy="160"
-                    r="150"
-                    fill="transparent"
-                    stroke="currentColor"
-                    strokeWidth="8"
-                    className="text-gray-50"
-                />
-                <circle
-                    cx="160"
-                    cy="160"
-                    r="150"
-                    fill="transparent"
-                    stroke="url(#timerGradient)"
-                    strokeWidth="12"
-                    strokeDasharray={2 * Math.PI * 150}
-                    strokeDashoffset={2 * Math.PI * 150 * (1 - progress / 100)}
-                    strokeLinecap="round"
-                    className="transition-all duration-1000 ease-linear"
-                />
-                <defs>
-                    <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#1151d3" />
-                        <stop offset="100%" stopColor="#031a6b" />
-                    </linearGradient>
-                </defs>
-            </svg>
+          <svg className="absolute w-full h-full -rotate-90 transform">
+            <circle
+              cx="160"
+              cy="160"
+              r="150"
+              fill="transparent"
+              stroke="currentColor"
+              strokeWidth="8"
+              className="text-gray-50 dark:text-gray-800"
+            />
+            <circle
+              cx="160"
+              cy="160"
+              r="150"
+              fill="transparent"
+              stroke="url(#timerGradient)"
+              strokeWidth="12"
+              strokeDasharray={2 * Math.PI * 150}
+              strokeDashoffset={2 * Math.PI * 150 * (1 - progress / 100)}
+              strokeLinecap="round"
+              className="transition-all duration-1000 ease-linear"
+            />
+            <defs>
+              <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#1151d3" />
+                <stop offset="100%" stopColor="#031a6b" />
+              </linearGradient>
+            </defs>
+          </svg>
 
-            <div className="text-center z-10">
-                <div className="text-8xl font-black text-[#031a6b] tracking-tighter tabular-nums drop-shadow-sm">
-                    {formatTime(timeLeft)}
-                </div>
-                <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-blue-50 rounded-full">
-                    <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`}></span>
-                    <span className="text-[9px] font-black text-blue-500 uppercase tracking-widest leading-none">
-                        {isActive ? t('timerRunning') : t('timerPaused')}
-                    </span>
-                </div>
+          <div className="text-center z-10">
+            <div className="text-8xl font-black text-[#031a6b] dark:text-white tracking-tighter tabular-nums drop-shadow-sm">
+              {formatTime(timeLeft)}
             </div>
+            <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-blue-50 dark:bg-blue-900/40 rounded-full">
+              <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-green-500 animate-pulse' : 'bg-gray-300 dark:bg-gray-600'}`}></span>
+              <span className="text-[9px] font-black text-blue-500 dark:text-blue-300 uppercase tracking-widest leading-none">
+                {isActive ? t('timerRunning') : t('timerPaused')}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Controls */}
       <div className="flex justify-center gap-6">
-        <button 
-           onClick={toggleTimer}
-           className={`w-20 h-20 rounded-3xl flex items-center justify-center transition-all active:scale-90 shadow-2xl ${
-             isActive 
-               ? 'bg-white text-orange-500 border-2 border-orange-100' 
-               : 'bg-[#1151d3] text-white shadow-blue-200'
-           }`}
+        <button
+          onClick={toggleTimer}
+          className={`w-20 h-20 rounded-3xl flex items-center justify-center transition-all active:scale-90 shadow-2xl ${isActive
+              ? 'bg-white dark:bg-[#1e293b] text-orange-500 border-2 border-orange-100 dark:border-orange-900/30'
+              : 'bg-[#1151d3] text-white shadow-blue-200 dark:shadow-none'
+            }`}
         >
-           <span className="material-symbols-outlined text-4xl font-black">
-             {isActive ? 'pause' : 'play_arrow'}
-           </span>
+          <span className="material-symbols-outlined text-4xl font-black">
+            {isActive ? 'pause' : 'play_arrow'}
+          </span>
         </button>
-        <button 
-           onClick={() => resetTimer(mode)}
-           className="w-20 h-20 rounded-3xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-gray-100 transition-all active:scale-95"
+        <button
+          onClick={() => resetTimer(mode)}
+          className="w-20 h-20 rounded-3xl bg-gray-50 dark:bg-[#1e293b] text-gray-400 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-700 transition-all active:scale-95"
         >
-           <span className="material-symbols-outlined text-3xl">refresh</span>
+          <span className="material-symbols-outlined text-3xl">refresh</span>
         </button>
       </div>
 
       {/* Subject Selection */}
-      <div className="pt-6 border-t border-gray-100 space-y-4">
+      <div className="pt-6 border-t border-gray-100 dark:border-gray-800 space-y-4">
         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">{t('associateSubject')}</p>
         <div className="flex flex-wrap gap-2 justify-center">
-            {subjects.map(s => (
-                <button
-                  key={s.id}
-                  onClick={() => setSelectedSubjectId(selectedSubjectId === s.id ? null : s.id)}
-                  className={`px-5 py-2.5 rounded-xl text-[11px] font-black transition-all flex items-center gap-2 border-2 ${
-                    selectedSubjectId === s.id
-                      ? 'bg-blue-50/50 border-[#1151d3] text-[#1151d3] shadow-sm'
-                      : 'bg-white border-gray-100 text-gray-400 hover:border-gray-200'
-                  }`}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: s.colorCode }}></span>
-                  {s.name}
-                </button>
-            ))}
+          {subjects.map(s => (
+            <button
+              key={s.id}
+              onClick={() => setSelectedSubjectId(selectedSubjectId === s.id ? null : s.id)}
+              className={`px-5 py-2.5 rounded-xl text-[11px] font-black transition-all flex items-center gap-2 border-2 ${selectedSubjectId === s.id
+                  ? 'bg-blue-50/50 dark:bg-blue-900/40 border-[#1151d3] text-[#1151d3] shadow-sm'
+                  : 'bg-white dark:bg-[#1e293b] border-gray-100 dark:border-gray-800 text-gray-400 hover:border-gray-200 dark:hover:border-gray-700'
+                }`}
+            >
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: s.colorCode }}></span>
+              {s.name}
+            </button>
+          ))}
         </div>
       </div>
     </div>

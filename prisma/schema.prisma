@@ -4,7 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -112,6 +113,7 @@ model Task {
   updatedAt   DateTime  @updatedAt
   timeEnd     String?
   dateEnd     DateTime?
+  attachments String?   @default("[]")
   subject     Subject?  @relation(fields: [subjectId], references: [id])
   goal        Goal?     @relation(fields: [goalId], references: [id], onDelete: Cascade)
   user        User      @relation(fields: [userId], references: [id])
@@ -156,6 +158,7 @@ model Event {
   userId      String
   createdAt   DateTime  @default(now())
   dateEnd     DateTime?
+  attachments String?   @default("[]")
   isCompleted Boolean   @default(false)
   subject     Subject?  @relation(fields: [subjectId], references: [id])
   user        User      @relation(fields: [userId], references: [id])

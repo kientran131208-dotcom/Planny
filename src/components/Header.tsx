@@ -94,7 +94,7 @@ export default function Header() {
   }).format(new Date());
 
   return (
-    <header className="h-16 w-[calc(100%-240px)] fixed top-0 right-0 z-50 bg-white flex justify-between items-center px-8 shadow-sm no-print">
+    <header className="h-16 w-[calc(100%-240px)] fixed top-0 right-0 z-50 bg-white dark:bg-[#020617] border-b border-gray-100 dark:border-gray-800 flex justify-between items-center px-8 shadow-sm no-print">
       <div className="flex items-center text-left">
         <h2 className="text-lg font-semibold text-[#031a6b]">{currentTitle}</h2>
         {pathname === "/" && (
@@ -112,7 +112,7 @@ export default function Header() {
               {isSearching ? 'sync' : 'search'}
             </span>
             <input
-              className="pl-10 pr-4 py-2 bg-[#eff4ff] border-none rounded-full text-sm w-64 focus:ring-2 focus:ring-[#1151d3]/20 transition-all outline-none placeholder:text-gray-400"
+              className="pl-10 pr-4 py-2 bg-[#eff4ff] dark:bg-slate-800/50 dark:text-gray-200 border-none rounded-full text-sm w-64 focus:ring-2 focus:ring-[#1151d3]/20 transition-all outline-none placeholder:text-gray-400"
               placeholder={t('searchHint')}
               type="text"
               value={searchQuery}
@@ -123,7 +123,7 @@ export default function Header() {
 
           {/* Search Results Dropdown */}
           {showSearchDropdown && results.length > 0 && (
-            <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-50 p-2 z-50 overflow-hidden">
+            <div className="absolute top-full right-0 mt-2 w-80 bg-white dark:bg-[#0f172a] rounded-2xl shadow-2xl border border-gray-50 dark:border-gray-800 p-2 z-50 overflow-hidden">
               <div className="px-3 py-2 border-b border-gray-50 text-left">
                 <span className="text-[10px] font-black uppercase tracking-widest text-[#1151d3]">{t('searchResults')}</span>
               </div>
@@ -133,7 +133,7 @@ export default function Header() {
                     key={i} 
                     href={res.href}
                     onClick={() => setShowSearchDropdown(false)}
-                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#eff4ff] transition-all group"
+                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#eff4ff] dark:hover:bg-gray-800 transition-all group"
                   >
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${res.type === 'task' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'}`}>
                       <span className="material-symbols-outlined text-sm">{res.type === 'task' ? 'task_alt' : 'event'}</span>
@@ -153,7 +153,7 @@ export default function Header() {
           )}
 
           {showSearchDropdown && results.length === 0 && !isSearching && searchQuery.length >= 2 && (
-             <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl p-6 z-50 text-center border border-gray-50">
+             <div className="absolute top-full right-0 mt-2 w-64 bg-white dark:bg-[#0f172a] rounded-2xl shadow-xl p-6 z-50 text-center border border-gray-50 dark:border-gray-800">
                 <span className="material-symbols-outlined text-gray-200 text-4xl mb-2">search_off</span>
                 <p className="text-xs text-gray-400 font-medium">{t('notFound', { query: searchQuery })}</p>
              </div>
@@ -164,7 +164,7 @@ export default function Header() {
         <div className="relative" ref={notiDropdownRef}>
           <button 
             onClick={() => setShowNotiDropdown(!showNotiDropdown)}
-            className={`relative p-2 rounded-full transition-all ${showNotiDropdown ? 'bg-blue-100 text-[#1151d3]' : 'text-gray-500 hover:text-[#1151d3] hover:bg-[#eff4ff]'}`}
+            className={`relative p-2 rounded-full transition-all ${showNotiDropdown ? 'bg-blue-100 dark:bg-blue-900/40 text-[#1151d3] dark:text-blue-400' : 'text-gray-500 hover:text-[#1151d3] hover:bg-[#eff4ff] dark:hover:bg-gray-800'}`}
           >
             <span className="material-symbols-outlined">notifications</span>
             {notifications.length > 0 && (
@@ -175,7 +175,7 @@ export default function Header() {
           </button>
 
           {showNotiDropdown && (
-            <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-50 p-2 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="absolute top-full right-0 mt-2 w-80 bg-white dark:bg-[#0f172a] rounded-2xl shadow-2xl border border-gray-50 dark:border-gray-800 p-2 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
               <div className="px-4 py-3 border-b border-gray-50 flex items-center justify-between">
                 <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">{t('deadlineNotifications')}</span>
                 <span className="bg-red-50 text-red-500 text-[10px] font-black px-2 py-0.5 rounded-full uppercase italic">{t('priorityAlert')}</span>
@@ -185,10 +185,10 @@ export default function Header() {
                 {notifications.length > 0 ? (
                   notifications.map((noti) => (
                     <Link 
-                      key={noti.id}
-                      href={noti.type === 'TASK' ? '/tasks' : '/calendar'}
-                      onClick={() => setShowNotiDropdown(false)}
-                      className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all group border-b border-gray-50 last:border-0"
+                       key={noti.id}
+                       href={noti.type === 'TASK' ? '/tasks' : '/calendar'}
+                       onClick={() => setShowNotiDropdown(false)}
+                       className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all group border-b border-gray-50 dark:border-gray-800/50 last:border-0"
                     >
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                         noti.priority === 'HIGH' ? 'bg-red-50 text-red-500' : 'bg-blue-50 text-blue-500'
@@ -222,9 +222,9 @@ export default function Header() {
               
               <div className="p-2 border-t border-gray-50">
                 <Link 
-                  href="/tasks" 
-                  onClick={() => setShowNotiDropdown(false)}
-                  className="w-full py-2 text-center text-[10px] font-black uppercase text-[#1151d3] hover:bg-blue-50 rounded-lg block transition-all tracking-widest"
+                   href="/tasks" 
+                   onClick={() => setShowNotiDropdown(false)}
+                   className="w-full py-2 text-center text-[10px] font-black uppercase text-[#1151d3] dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg block transition-all tracking-widest"
                 >
                   {t('viewYourPath')}
                 </Link>
@@ -234,13 +234,13 @@ export default function Header() {
         </div>
 
         {user?.image ? (
-          <img
-            alt="Avatar"
-            className="w-8 h-8 rounded-full border-2 border-[#eff4ff] object-cover"
-            src={user.image}
-          />
+           <img
+             alt="Avatar"
+             className="w-8 h-8 rounded-full border-2 border-[#eff4ff] dark:border-gray-800 object-cover"
+             src={user.image}
+           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold border-2 border-[#eff4ff]">
+          <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-700 dark:text-blue-400 font-bold border-2 border-[#eff4ff] dark:border-gray-800">
             {user?.name?.[0]?.toUpperCase() || "U"}
           </div>
         )}

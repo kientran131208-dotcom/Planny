@@ -66,14 +66,24 @@
   
   --color-outline: #475569;
   --color-outline-variant: #1e293b;
-
-  /* Chart & UI overrides for dark mode */
-  background-color: var(--color-background);
-  color: var(--color-foreground);
 }
 
-.dark .bg-white {
+.dark {
+  /* Chart & UI overrides for dark mode */
+  background-color: var(--color-background) !important;
+  color: var(--color-foreground) !important;
+}
+
+.dark body {
+  background-color: #010415 !important;
+}
+
+.dark .bg-white, .dark .bg-slate-50, .dark .bg-gray-50 {
   background-color: #0f172a !important;
+}
+
+.dark .bg-\[\#f8f9ff\], .dark .bg-background {
+  background-color: #010415 !important;
 }
 
 .dark .text-\[\#031a6b\] {
