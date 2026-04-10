@@ -1,3 +1,4 @@
+// FORCE REBUILD FOR POSTGRESQL
 generator client {
   provider   = "prisma-client-js"
   engineType = "library"
