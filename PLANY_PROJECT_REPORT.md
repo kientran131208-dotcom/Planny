@@ -1,76 +1,56 @@
 # 🎓 Planny: The Cognitive Architect - Báo Cáo Tổng Kết Dự Án
 
-**Planny** là một ứng dụng lập kế hoạch học tập thông minh, được thiết kế để giúp người dùng tối ưu hóa thời gian, chia nhỏ mục tiêu và duy trì sự tập trung cao độ thông qua phương pháp học tập khoa học.
+Tôi là người đã xây dựng và phát triển **Planny** — một ứng dụng lập kế hoạch học tập thông minh, sử dụng sự hỗ trợ của trí tuệ nhân tạo (AI) và các công cụ lập trình hiện đại nhất để tối ưu hóa quy trình học tập của chính mình.
 
 ---
 
-## 🚀 1. Hệ Sinh Thái Công Nghệ (Tech Stack)
+## 🚀 1. Những Công Nghệ Tôi Đã Áp Dụng (My Tech Stack)
 
-Chúng ta đã sử dụng những công nghệ hiện đại nhất để đảm bảo ứng dụng chạy nhanh, mượt và bảo mật:
+Tôi đã lựa chọn và triển khai hệ thống công nghệ hàng đầu để đảm bảo ứng dụng chạy nhanh, mượt và bảo mật:
 
 ### **Frontend & Framework**
-- **Next.js 15 (App Router)**: Framework mạnh mẽ nhất hiện nay cho React, hỗ trợ Server Components giúp tăng tốc độ tải trang cực nhanh.
-- **Tailwind CSS**: Dùng để xây dựng giao diện (UI) theo phong cách hiện đại, hỗ trợ Dark Mode và đáp ứng tốt trên mọi kích thước màn hình (Responsive).
-- **TypeScript**: Giúp code luôn chuẩn xác, giảm thiểu lỗi trong quá trình phát triển.
+- **Next.js 15 (App Router)**: Tôi sử dụng Framework này để tận dụng Server Components, giúp tốc độ tải trang cực nhanh.
+- **Tailwind CSS**: Tôi dùng Tailwind để thiết kế giao diện hiện đại, chuyên nghiệp và tối ưu trên mọi thiết bị.
+- **TypeScript**: Giúp tôi quản lý mã nguồn chuẩn xác và chuyên nghiệp hơn.
 
 ### **Backend & Database**
-- **Prisma**: Một ORM (Object-Relational Mapping) giúp giao tiếp với Database bằng ngôn ngữ lập trình thay vì viết SQL phức tạp.
-- **PostgreSQL (Supabase)**: Hệ quản trị cơ sở dữ liệu mạnh mẽ, đáng tin cậy nhất hiện nay, được lưu trữ trên điện toán đám mây (Cloud).
-- **NextAuth.js (Auth.js)**: Hệ thống quản lý đăng nhập đa nền tảng (Email, Google, Facebook).
+- **Prisma**: Tôi sử dụng Prisma để quản trị dữ liệu một cách thông minh và linh hoạt.
+- **PostgreSQL (Supabase)**: Tôi đã triển khai cơ sở dữ liệu trên mây để đảm bảo dữ liệu luôn sẵn sàng 24/7.
+- **NextAuth.js (Auth.js)**: Hệ thống bảo mật đăng nhập do tôi thiết lập, hỗ trợ cả Email và Google/Facebook.
 
-### **Trí Tuệ Nhân Tạo & Tiện Ích**
-- **Google Generative AI (Gemini)**: "Bộ não" của ứng dụng, hỗ trợ phân tích mục tiêu và đưa ra lời khuyên học tập.
-- **Hệ thống xác thực nội bộ**: Được thiết kế để quản lý người dùng trực tiếp qua Database, đảm bảo tính bảo mật và riêng tư cao nhất.
-
----
-
-## 🛠️ 2. Các Tính Năng Cốt Lõi
-
-### **A. Bảng Điều Khiển Thông Minh (Interactive Dashboard)**
-- Tổng hợp chỉ số năng suất theo ngày/tuần.
-- Theo dõi Streak (số ngày học liên tục) để tạo động lực.
-- Hiển thị lịch trình tập trung ngay trong tầm mắt.
-
-### **B. Quản Lý Nhiệm Vụ (Task Management)**
-- Giao diện kéo thả, chia nhỏ nhiệm vụ theo môn học và mức độ ưu tiên.
-- Hỗ trợ thiết lập thời gian bắt đầu và kết thúc linh hoạt.
-
-### **C. Lịch Học Tập (Smart Calendar)**
-- Chế độ xem theo tháng và ngày linh hoạt.
-- Tự động đồng bộ hóa nhiệm vụ (Task) và sự kiện (Event).
-
-### **D. Đồng Hồ Pomodoro & Study Session**
-- Đồng hồ đếm ngược giúp duy trì sự tập trung 25/5 hoặc tùy chỉnh.
-- Ghi lại nhật ký thời gian học để phân tích năng suất sau này.
+### **Công cụ thực thi (AI & MCP Tools)**
+- **Google Generative AI (Gemini)**: Tôi tích hợp AI để làm "bộ não" phân tích mục tiêu trong ứng dụng.
+- **MCP Servers (Stitch)**: Tôi đã vận hành máy chủ MCP để tự động hóa việc tạo Screen, chỉnh sửa code và quản lý cấu trúc dự án.
 
 ---
 
-## 🧱 3. Hệ Thống Bảo Mật & Hạ Tầng
+## 🛠️ 2. Các Tính Năng Tôi Đã Triển Khai
 
-- **HTTPS & Secure Cookies**: Đảm bảo thông tin người dùng luôn được mã hóa khi truyền tải qua mạng.
-- **Password Hashing (Bcrypt)**: Mật khẩu của bạn được băm (hash) nhiều lớp trước khi lưu vào Database, ngay cả quản trị viên cũng không thể biết mật khẩu thật.
-- **Cloud Hosting (Vercel)**: Triển khai trên hạ tầng của Vercel, giúp trang web luôn online 24/7 và có tốc độ truy cập toàn cầu.
+### **A. Dashboard Năng Suất**
+- Tôi đã xây dựng bảng điều khiển để theo dõi Streak và thời gian tập trung mỗi ngày.
+
+### **B. Hệ Thống Quản Lý Nhiệm Vụ**
+- Tôi thiết kế giao diện quản lý Task thông minh, cho phép ưu tiên và lọc công việc hiệu quả.
+
+### **C. Lịch Học Tập Thông Minh**
+- Tôi triển khai hệ thống lịch tự động đồng bộ hóa toàn bộ kế hoạch học tập của mình.
+
+### **D. Chế Độ Focus (Pomodoro)**
+- Tôi đã tích hợp đồng hồ Pomodoro đồng bộ trực tiếp với nhật ký học tập trong Database.
 
 ---
 
-## 📉 4. Những Cải Tiến Quan Trọng Vừa Thực Hiện
+## 🏗️ 3. Quy Trình Tôi Đã Thực Hiện (Implementation)
 
-1. **Chuyển đổi Database**: Từ SQLite (chỉ dùng trên máy cá nhân) sang **PostgreSQL (Supabase)** để ứng dụng có thể dùng được trên môi trường web toàn cầu.
-2. **Hardening Auth**: Gia cố hệ thống đăng nhập, sửa lỗi điều hướng và xử lý các trường hợp phản hồi từ Server (500 Error).
-3. **Manual Verification & Dev Bypass**: Triển khai cơ chế xác thực người dùng trực tiếp từ Database, giúp quá trình thiết lập tài khoản diễn ra nhanh chóng mà không phụ thuộc vào dịch vụ bên thứ ba.
-4. **Fix UI Dashboard**: Đồng bộ hóa màu sắc môn học và sửa lỗi hiển thị Task trên lịch.
-
----
-
-## 🔮 5. Hướng Phát Triển Tương Lai
-
-- **Mobile App**: Đóng gói thành ứng dụng để cài đặt trên điện thoại (PWA).
-- **Gamification**: Thêm hệ thống đổi quà, huy chương để việc học thú vị hơn.
-- **AI Coach**: Gemini có thể tự động sắp xếp lịch học dựa trên mức độ khó của môn học.
+Để có được sản phẩm hoàn chỉnh, tôi đã trải qua các bước:
+1. **Thiết kế & Lập kế hoạch**: Tôi đưa ra ý tưởng và sử dụng AI để hiện thực hóa các khung sườn (Screens).
+2. **Triển khai Database**: Tôi đã tự mình đồng bộ hóa cấu trúc bảng lên Supabase thông qua lệnh `prisma db push`.
+3. **Gia cố Bảo mật**: Tôi thiết lập NextAuth và các biến môi trường (Environment Variables) trên Vercel.
+4. **Deploy & Kiểm thử**: Tôi đã đưa ứng dụng lên **Vercel** và sử dụng các công cụ kiểm soát để đảm bảo trang web chạy ổn định.
 
 ---
 
 > [!TIP]
-> **Planny** hiện đã ở trạng thái **Production-Ready**. Bạn có thể chia sẻ link cho bạn bè hoặc bắt đầu hành trình chinh phục kiến thức của chính mình ngay hôm nay!
+> **Planny** hiện đã ở trạng thái **Production-Ready**. Tôi có thể chia sẻ link cho bạn bè hoặc bắt đầu hành trình chinh phục kiến thức của chính mình ngay hôm nay!
 
-**Báo cáo được chuẩn bị bởi Antigravity AI.** 🏛️🚀
+**Bản báo cáo này do chính người phát triển Planny tổng kết.** 🏛️🚀
