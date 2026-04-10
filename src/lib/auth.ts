@@ -6,7 +6,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
 
-// Type augmentation for NextAuth to handle user IDs correctly in TypeScript
+// Type augmentation for NextAuth
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
@@ -34,30 +34,42 @@ declare module "next-auth/jwt" {
   }
 }
 
-export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      allowDangerousEmailAccountLinking: true,
-    }),
-    FacebookProvider({
-      clientId: process.env.FACEBOOK_CLIENT_ID || "",
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET || "",
-      allowDangerousEmailAccountLinking: true,
-    }),
-    CredentialsProvider({
-      name: "Planny Account",
-      credentials: {
-        email: { label: "Email", type: "email", placeholder: "your@email.com" },
-        password: { label: "Password", type: "password" }
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Vui lòng nhập Email và Mật khẩu");
-        }
+// Logic to build providers conditionally to prevent initialization errors
+const providers = [];
 
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  providers.push(
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    })
+  );
+}
+
+if (process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET) {
+  providers.push(
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
+    })
+  );
+}
+
+providers.push(
+  CredentialsProvider({
+    name: "Planny Account",
+    credentials: {
+      email: { label: "Email", type: "email" },
+      password: { label: "Password", type: "password" }
+    },
+    async authorize(credentials) {
+      if (!credentials?.email || !credentials?.password) {
+        throw new Error("Vui lòng nhập Email và Mật khẩu");
+      }
+
+      try {
         const user = await prisma.user.findUnique({
           where: { email: credentials.email }
         });
@@ -75,12 +87,10 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Mật khẩu không chính xác");
         }
 
-        // Check if email is verified
         if (!user.emailVerified) {
           throw new Error("EMAIL_NOT_VERIFIED");
         }
 
-        // Return the user object with ID
         return { 
           id: user.id, 
           name: user.name, 
@@ -90,13 +100,20 @@ export const authOptions: NextAuthOptions = {
           school: user.school || "",
           bio: user.bio || ""
         };
+      } catch (err) {
+        console.error("[AUTH_AUTHORIZE_ERROR]", err);
+        throw new Error("Lỗi kết nối Server: " + (err instanceof Error ? err.message : "Hãy kiểm tra DATABASE_URL"));
       }
-    })
-  ],
+    }
+  })
+);
+
+export const authOptions: NextAuthOptions = {
+  // Use any cast if there is a version mismatch in Prisma types
+  adapter: PrismaAdapter(prisma as any),
+  providers,
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      // On the first call (sign in), 'user' is available.
-      // We persist the user ID and others in the token for subsequent requests.
       if (user) {
         token.id = user.id;
         token.role = user.role;
@@ -106,7 +123,6 @@ export const authOptions: NextAuthOptions = {
         token.bio = user.bio;
       }
 
-      // If the session is updated (via updateSession() on client)
       if (trigger === "update" && session) {
         if (session.name) token.name = session.name;
         if (session.image) token.image = session.image;
@@ -117,8 +133,6 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      // The session callback maps the token data to the session object
-      // so it's accessible on the client side (useSession) and server side (getServerSession).
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
@@ -131,11 +145,12 @@ export const authOptions: NextAuthOptions = {
     }
   },
   session: { 
-    strategy: "jwt", // Using JWT strategy with Prisma adapter for App Router compatibility
+    strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET || "planny-super-secret-key-development",
+  secret: process.env.NEXTAUTH_SECRET || "planny-super-secret-key-development-2024",
   pages: {
     signIn: "/login",
+    error: "/login", // Redirect to login on error
   },
   debug: process.env.NODE_ENV === "development",
 };
