@@ -8,44 +8,59 @@ export async function getCalendarItems(month?: number, year?: number, startDate?
   try {
     const userId = await getUserId();
     
-    let whereClause: any = { userId };
-    
-    let start: Date | null = null;
-    let end: Date | null = null;
+    let start: Date;
+    let end: Date;
 
     if (startDate && endDate) {
       start = new Date(startDate);
       end = new Date(endDate);
-      end.setHours(23, 59, 59, 999);
-    } else if (month !== undefined && year !== undefined) {
-      start = new Date(year, month, 1);
-      end = new Date(year, month + 1, 0, 23, 59, 59, 999);
+    } else {
+      const now = new Date();
+      const targetMonth = month !== undefined ? month : now.getMonth();
+      const targetYear = year !== undefined ? year : now.getFullYear();
+      
+      start = new Date(targetYear, targetMonth, 1);
+      // Go back a few days to catch items that might overlap from prev month
+      start.setDate(start.getDate() - 7); 
+      
+      end = new Date(targetYear, targetMonth + 1, 0);
+      // Go forward a few days to catch items that overlap into next month
+      end.setDate(end.getDate() + 7);
     }
 
-    if (start && end) {
-       whereClause = {
-         userId,
-         OR: [
-           { date: { gte: start, lte: end } },
-           { dateEnd: { gte: start, lte: end } },
-           { AND: [
-               { date: { lte: start } },
-               { dateEnd: { gte: end } }
-             ] 
-           }
-         ]
-       };
-    }
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+
+    const whereClause = {
+      userId,
+      OR: [
+        { date: { gte: start, lte: end } },
+        { dateEnd: { gte: start, lte: end } },
+        {
+          AND: [
+            { date: { lte: start } },
+            { dateEnd: { gte: end } }
+          ]
+        }
+      ]
+    };
 
     const [events, tasks] = await Promise.all([
-      prisma.event.findMany({ where: whereClause, include: { subject: true } }),
-      prisma.task.findMany({ where: whereClause, include: { subject: true } })
+      prisma.event.findMany({ 
+        where: whereClause, 
+        include: { subject: true } 
+      }),
+      prisma.task.findMany({ 
+        where: whereClause, 
+        include: { subject: true } 
+      })
     ]);
 
     return [
       ...events.map(e => ({ ...e, type: 'EVENT' as const })), 
       ...tasks.map(t => ({ ...t, type: 'TASK' as const }))
-    ];
+    ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
   } catch (error) {
     console.error('Error fetching calendar items:', error);
     return [];
@@ -53,19 +68,44 @@ export async function getCalendarItems(month?: number, year?: number, startDate?
 }
 
 export async function getTodaySummary() {
-  return { count: 0 };
+  try {
+    const userId = await getUserId();
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+    const whereClause = {
+      userId,
+      OR: [
+        { date: { gte: start, lte: end } },
+        { dateEnd: { gte: start, lte: end } },
+        {
+          AND: [
+            { date: { lte: start } },
+            { dateEnd: { gte: end } }
+          ]
+        }
+      ]
+    };
+
+    const [eventsCount, tasksCount] = await Promise.all([
+      prisma.event.count({ where: whereClause }),
+      prisma.task.count({ where: { ...whereClause, isCompleted: false } })
+    ]);
+
+    return { count: eventsCount + tasksCount };
+  } catch (error) {
+    return { count: 0 };
+  }
 }
 
 export async function getUpcomingAlerts() {
   try {
     const userId = await getUserId();
     const now = new Date();
-    // Start of today to include tasks due today
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    
-    // Mốc 3 ngày tới
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
     const threeDaysLater = new Date(startOfToday);
-    threeDaysLater.setDate(startOfToday.getDate() + 4); // +4 to be safe including the 3rd day
+    threeDaysLater.setDate(startOfToday.getDate() + 4);
 
     const [tasks, events] = await Promise.all([
       prisma.task.findMany({
@@ -73,9 +113,8 @@ export async function getUpcomingAlerts() {
           userId,
           isCompleted: false,
           OR: [
-            // Include overdue (date < today) and upcoming (within 3 days)
-            { date: { lte: threeDaysLater } },
-            { dateEnd: { lte: threeDaysLater } }
+            { date: { gte: startOfToday, lte: threeDaysLater } },
+            { dateEnd: { gte: startOfToday, lte: threeDaysLater } }
           ]
         },
         include: { subject: true },
@@ -84,9 +123,10 @@ export async function getUpcomingAlerts() {
       prisma.event.findMany({
         where: {
           userId,
-          isCompleted: false,
-          // For events, usually only upcoming ones matter, but let's include today
-          date: { lte: threeDaysLater, gte: startOfToday }
+          OR: [
+            { date: { gte: startOfToday, lte: threeDaysLater } },
+            { dateEnd: { gte: startOfToday, lte: threeDaysLater } }
+          ]
         },
         include: { subject: true },
         orderBy: { date: 'asc' }
@@ -94,8 +134,8 @@ export async function getUpcomingAlerts() {
     ]);
 
     return [
-      ...tasks.map(t => ({ id: t.id, title: t.title, type: 'TASK', date: t.date, dateEnd: t.dateEnd, priority: t.priority })),
-      ...events.map(e => ({ id: e.id, title: e.title, type: 'EVENT', date: e.date, priority: e.priority }))
+      ...tasks.map(t => ({ ...t, type: 'TASK' as const })),
+      ...events.map(e => ({ ...e, type: 'EVENT' as const }))
     ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   } catch (error) {
     console.error('Error fetching upcoming alerts:', error);
@@ -109,11 +149,11 @@ export async function createEvent(data: any) {
     const result = await prisma.event.create({
       data: {
         title: data.title,
-        description: data.description,
+        description: data.description || '',
         date: new Date(data.date),
         dateEnd: data.dateEnd ? new Date(data.dateEnd) : new Date(data.date),
-        timeStart: data.timeStart,
-        timeEnd: data.timeEnd,
+        timeStart: data.timeStart || '',
+        timeEnd: data.timeEnd || '',
         priority: data.priority || 'MEDIUM',
         isCompleted: false,
         subjectId: data.subjectId || null,
