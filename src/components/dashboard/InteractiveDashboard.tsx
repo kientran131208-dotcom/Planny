@@ -243,9 +243,13 @@ export default function InteractiveDashboard({ tasks, stats, calendarItems: init
                   {hasActivity && (
                     <div className="flex gap-0.5 mt-0.5 absolute -bottom-1">
                       {dayItems.slice(0, 3).map((it, idx) => {
-                        const color = it.color || (it.type === 'EVENT' ? '#3b82f6' : '#a855f7');
+                        const dotColor = it.subject?.colorCode || (it.type === 'EVENT' ? '#3b82f6' : '#8b5cf6');
                         return (
-                          <div key={idx} className={`w-1 h-1 rounded-full ${isSelected ? 'bg-white' : ''}`} style={{ backgroundColor: isSelected ? undefined : color }}></div>
+                          <div 
+                            key={idx} 
+                            className={`w-1 h-1 rounded-full ${isSelected ? 'bg-white' : ''}`} 
+                            style={{ backgroundColor: isSelected ? undefined : dotColor }}
+                          />
                         );
                       })}
                     </div>
