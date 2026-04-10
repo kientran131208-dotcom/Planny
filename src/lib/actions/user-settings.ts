@@ -7,12 +7,13 @@ import { revalidatePath } from 'next/cache';
 export async function getUserSettings() {
   try {
     const userId = await getUserId();
-    // Raw SQL to bypass Prisma model validation errors
+    // Raw SQL to bypass Prisma model validation issues if any
     const users: any[] = await prisma.$queryRaw`
       SELECT 
+        pomoGoalDay,
         pomoWorkMin, pomoShortBreakMin, pomoLongBreakMin, pomoInterval,
         remindersEnabled, notificationSound, soundVolume, streakWarningEnabled
-      FROM User 
+      FROM "User" 
       WHERE id = ${userId} 
       LIMIT 1
     `;
@@ -21,14 +22,15 @@ export async function getUserSettings() {
     
     const user = users[0];
     return {
-      pomoWorkMin: user.pomoWorkMin ?? 25,
-      pomoShortBreakMin: user.pomoShortBreakMin ?? 5,
-      pomoLongBreakMin: user.pomoLongBreakMin ?? 15,
-      pomoInterval: user.pomoInterval ?? 4,
-      remindersEnabled: Boolean(user.remindersEnabled ?? true),
-      notificationSound: user.notificationSound ?? 'crystal',
-      soundVolume: user.soundVolume ?? 0.5,
-      streakWarningEnabled: Boolean(user.streakWarningEnabled ?? true),
+      pomoGoalDay: user.pomoGoalDay ?? 8,
+      pomoWorkMin: user.pomoworkmin ?? user.pomoWorkMin ?? 25,
+      pomoShortBreakMin: user.pomoshortbreakmin ?? user.pomoShortBreakMin ?? 5,
+      pomoLongBreakMin: user.pomolongbreakmin ?? user.pomoLongBreakMin ?? 15,
+      pomoInterval: user.pomointerval ?? user.pomoInterval ?? 4,
+      remindersEnabled: Boolean(user.remindersenabled ?? user.remindersEnabled ?? true),
+      notificationSound: user.notificationsound ?? user.notificationSound ?? 'crystal',
+      soundVolume: user.soundvolume ?? user.soundVolume ?? 0.5,
+      streakWarningEnabled: Boolean(user.streakwarningenabled ?? user.streakWarningEnabled ?? true),
     };
   } catch (error) {
     console.error('[SETTINGS] Error fetching user settings:', error);
@@ -37,6 +39,7 @@ export async function getUserSettings() {
 }
 
 export async function updateUserSettings(data: {
+  pomoGoalDay?: number;
   pomoWorkMin?: number;
   pomoShortBreakMin?: number;
   pomoLongBreakMin?: number;
@@ -55,8 +58,8 @@ export async function updateUserSettings(data: {
 
     Object.entries(data).forEach(([key, value]) => {
       if (value !== undefined) {
-        updates.push(`${key} = ?`);
-        // Handle booleans for SQLite (0 or 1)
+        updates.push(`"${key}" = ?`);
+        // Handle booleans for SQLite (0 or 1) - though we are on Postgres now, keep compatibility
         if (typeof value === 'boolean') {
           values.push(value ? 1 : 0);
         } else {
@@ -66,7 +69,7 @@ export async function updateUserSettings(data: {
     });
 
     if (updates.length > 0) {
-      const sql = `UPDATE User SET ${updates.join(', ')}, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`;
+      const sql = `UPDATE "User" SET ${updates.join(', ')}, "updatedAt" = CURRENT_TIMESTAMP WHERE id = ?`;
       await prisma.$executeRawUnsafe(sql, ...values, userId);
     }
 
